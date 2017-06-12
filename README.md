@@ -62,7 +62,7 @@ user you connect as needs to provide a password in order to use
 ansible-playbook -i hosts -K checkup.yml
 ```
 
-## Variables
+### Variables
 
 You may want to override the following variables:
 
@@ -73,7 +73,7 @@ You may want to override the following variables:
 * `bond_interfaces` — if you want the playbooks to check the bonding
   state of interfaces other than `bond0` and `bond1`.
 
-## Supported platforms
+### Supported platforms
 
 The playbook tries to be as platform-agnostic as possible, but is
 being tested regularly on Ubuntu 16.04.
