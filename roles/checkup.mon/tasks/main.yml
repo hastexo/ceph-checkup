@@ -56,34 +56,3 @@
   fetch:
     src: ceph_crushmap_{{ hostvars['localhost'].checkup_timestamp }}.txt
     dest: status
-
-- name: fetch ceph.conf
-  fetch:
-    src: /etc/ceph/ceph.conf
-    dest: status
-
-- name: collect logs from last 24 hours
-  shell:
-    find /var/log/ceph -type f -mtime -1 | xargs tar -czf ceph_logs_{{ hostvars['localhost'].checkup_timestamp }}.tar.gz
-  ignore_errors: yes
-
-- name: fetch logs from last 24 hours
-  fetch:
-    src: ceph_logs_{{ hostvars['localhost'].checkup_timestamp }}.tar.gz
-    dest: status
-
-- name: write all facts to local state file
-  local_action: copy content="{{ hostvars[inventory_hostname] }}" dest="status/{{ inventory_hostname }}/facts"
-
-- name: get current network bonding state
-  fetch:
-    src: /proc/net/bonding/bond{{ item }}
-    dest: status
-  with_sequence: start=0 end=1
-
-- name: get sysctl status
-  shell: 'sysctl -a'
-  register: sysctl_a
-
-- name: write sysctl status
-  local_action: copy content="{{ sysctl_a.stdout }}" dest="status/{{ inventory_hostname }}/sysctl_a"
