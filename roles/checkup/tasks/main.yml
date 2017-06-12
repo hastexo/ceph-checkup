@@ -3,7 +3,7 @@
 
 - name: collect logs from last 24 hours
   shell:
-    find /var/log/ceph -type f -mtime -1 | xargs tar -czf ceph_logs_{{ hostvars['localhost'].checkup_timestamp }}.tar.gz
+    find {{ ceph_log_directory }} -type f -mtime -1 | xargs tar -czf ceph_logs_{{ hostvars['localhost'].checkup_timestamp }}.tar.gz
   ignore_errors: yes
 
 - name: fetch logs from last 24 hours
@@ -13,7 +13,7 @@
 
 - name: fetch ceph.conf
   fetch:
-    src: /etc/ceph/ceph.conf
+    src: {{ ceph_config_directory }}/ceph.conf
     dest: status
 
 - name: get current network bonding state
