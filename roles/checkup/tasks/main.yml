@@ -15,9 +15,9 @@
 
 - name: get current network bonding state
   fetch:
-    src: "/proc/net/bonding/bond{{ item }}"
+    src: "/proc/net/bonding/{{ item }}"
     dest: status
-  with_sequence: start=0 end=1
+  with_items: "{{ bond_interfaces }}"
 
 - name: get sysctl status
   shell: 'sysctl -a'
