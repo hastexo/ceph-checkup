@@ -1,25 +1,21 @@
 ---
-- name: get the start date of the run
-  shell: date +%Y%m%d-%H%M%S
-  register: timestamp
-
 - name: collect logs from last 24 hours
   shell:
-    find /var/log/ceph -type f -mtime -1 | xargs tar -czf ceph_logs_{{ timestamp.stdout }}.tar.gz
+    find /var/log/ceph -type f -mtime -1 | xargs tar -czf ceph_logs_{{ hostvars['localhost'].checkup_timestamp }}.tar.gz
   ignore_errors: yes
-    
+
 - name: fetch logs from last 24 hours
   fetch:
-    src: ceph_logs_{{ timestamp.stdout }}.tar.gz
+    src: ceph_logs_{{ hostvars['localhost'].checkup_timestamp }}.tar.gz
     dest: status
 
 - name: list OSD journals
   shell:
-    ls /var/lib/ceph/osd/*/journal -la > ceph_journals_{{ timestamp.stdout }}.txt
+    ls /var/lib/ceph/osd/*/journal -la > ceph_journals_{{ hostvars['localhost'].checkup_timestamp }}.txt
 
 - name: fetch OSD journal list
   fetch:
-    src: ceph_journals_{{ timestamp.stdout }}.txt
+    src: ceph_journals_{{ hostvars['localhost'].checkup_timestamp }}.txt
     dest: status
 
 - name: fetch ceph.conf
@@ -29,7 +25,7 @@
 
 - name: write all facts to local state file
   local_action: copy content="{{ hostvars[inventory_hostname] }}" dest="status/{{ inventory_hostname }}/facts"
-    
+
 - name: get current network bonding state
   fetch:
     src: /proc/net/bonding/bond{{ item }}

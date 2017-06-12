@@ -1,64 +1,60 @@
 ---
-- name: get the start date of the run
-  shell: date +%Y%m%d-%H%M%S
-  register: timestamp
-
 - name: run ceph report
   shell:
-    ceph report | gzip -c > ceph_report_{{ timestamp.stdout }}.gz
+    ceph report | gzip -c > ceph_report_{{ hostvars['localhost'].checkup_timestamp }}.gz
 
 - name: fetch ceph report
   fetch:
-    src: ceph_report_{{ timestamp.stdout }}.gz
+    src: ceph_report_{{ hostvars['localhost'].checkup_timestamp }}.gz
     dest: status
 
 - name: run ceph -s
   shell:
-    ceph -s > ceph_s_{{ timestamp.stdout }}.txt
+    ceph -s > ceph_s_{{ hostvars['localhost'].checkup_timestamp }}.txt
 
 - name: fetch ceph -s
   fetch:
-    src: ceph_s_{{ timestamp.stdout }}.txt
+    src: ceph_s_{{ hostvars['localhost'].checkup_timestamp }}.txt
     dest: status
 
 - name: run ceph health detail
   shell:
-    ceph df > ceph_health_detail_{{ timestamp.stdout }}.txt
+    ceph df > ceph_health_detail_{{ hostvars['localhost'].checkup_timestamp }}.txt
 
 - name: fetch ceph health detail
   fetch:
-    src: ceph_health_detail_{{ timestamp.stdout }}.txt
+    src: ceph_health_detail_{{ hostvars['localhost'].checkup_timestamp }}.txt
     dest: status
 
 - name: run ceph osd tree
   shell:
-    ceph osd tree > ceph_osd_tree_{{ timestamp.stdout }}.txt
+    ceph osd tree > ceph_osd_tree_{{ hostvars['localhost'].checkup_timestamp }}.txt
 
 - name: fetch ceph osd tree
   fetch:
-    src: ceph_osd_tree_{{ timestamp.stdout }}.txt
+    src: ceph_osd_tree_{{ hostvars['localhost'].checkup_timestamp }}.txt
     dest: status
 
 - name: run ceph df
   shell:
-    ceph df > ceph_df_{{ timestamp.stdout }}.txt
+    ceph df > ceph_df_{{ hostvars['localhost'].checkup_timestamp }}.txt
 
 - name: fetch ceph df
   fetch:
-    src: ceph_df_{{ timestamp.stdout }}.txt
+    src: ceph_df_{{ hostvars['localhost'].checkup_timestamp }}.txt
     dest: status
 
 - name: get crushmap
   shell:
-    ceph osd getcrushmap -o ceph_crushmap_{{ timestamp.stdout }}
+    ceph osd getcrushmap -o ceph_crushmap_{{ hostvars['localhost'].checkup_timestamp }}
 
 - name: decompile crushmap
   shell:
-    crushtool -d ceph_crushmap_{{ timestamp.stdout }} -o ceph_crushmap_{{ timestamp.stdout }}.txt
+    crushtool -d ceph_crushmap_{{ hostvars['localhost'].checkup_timestamp }} -o ceph_crushmap_{{ hostvars['localhost'].checkup_timestamp }}.txt
 
 - name: fetch crushmap
   fetch:
-    src: ceph_crushmap_{{ timestamp.stdout }}.txt
+    src: ceph_crushmap_{{ hostvars['localhost'].checkup_timestamp }}.txt
     dest: status
 
 - name: fetch ceph.conf
@@ -68,12 +64,12 @@
 
 - name: collect logs from last 24 hours
   shell:
-    find /var/log/ceph -type f -mtime -1 | xargs tar -czf ceph_logs_{{ timestamp.stdout }}.tar.gz
+    find /var/log/ceph -type f -mtime -1 | xargs tar -czf ceph_logs_{{ hostvars['localhost'].checkup_timestamp }}.tar.gz
   ignore_errors: yes
 
 - name: fetch logs from last 24 hours
   fetch:
-    src: ceph_logs_{{ timestamp.stdout }}.tar.gz
+    src: ceph_logs_{{ hostvars['localhost'].checkup_timestamp }}.tar.gz
     dest: status
 
 - name: write all facts to local state file

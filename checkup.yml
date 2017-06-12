@@ -9,6 +9,13 @@
   tags:
     - always
 
+- hosts: localhost
+  become: no
+  tasks:
+  - name: get the start date of the run
+    set_fact:
+      checkup_timestamp: "{{ lookup('pipe', 'date +%Y%m%d%H%M%SZ') }}"
+
 - hosts: "mon"
   serial: 1
   become: yes
