@@ -1,0 +1,93 @@
+---
+- name: get the start date of the run
+  shell: date +%Y%m%d-%H%M%S
+  register: timestamp
+
+- name: run ceph report
+  shell:
+    ceph report | gzip -c > ceph_report_{{ timestamp.stdout }}.gz
+
+- name: fetch ceph report
+  fetch:
+    src: ceph_report_{{ timestamp.stdout }}.gz
+    dest: status
+
+- name: run ceph -s
+  shell:
+    ceph -s > ceph_s_{{ timestamp.stdout }}.txt
+
+- name: fetch ceph -s
+  fetch:
+    src: ceph_s_{{ timestamp.stdout }}.txt
+    dest: status
+
+- name: run ceph health detail
+  shell:
+    ceph df > ceph_health_detail_{{ timestamp.stdout }}.txt
+
+- name: fetch ceph health detail
+  fetch:
+    src: ceph_health_detail_{{ timestamp.stdout }}.txt
+    dest: status
+
+- name: run ceph osd tree
+  shell:
+    ceph osd tree > ceph_osd_tree_{{ timestamp.stdout }}.txt
+
+- name: fetch ceph osd tree
+  fetch:
+    src: ceph_osd_tree_{{ timestamp.stdout }}.txt
+    dest: status
+
+- name: run ceph df
+  shell:
+    ceph df > ceph_df_{{ timestamp.stdout }}.txt
+
+- name: fetch ceph df
+  fetch:
+    src: ceph_df_{{ timestamp.stdout }}.txt
+    dest: status
+
+- name: get crushmap
+  shell:
+    ceph osd getcrushmap -o ceph_crushmap_{{ timestamp.stdout }}
+
+- name: decompile crushmap
+  shell:
+    crushtool -d ceph_crushmap_{{ timestamp.stdout }} -o ceph_crushmap_{{ timestamp.stdout }}.txt
+
+- name: fetch crushmap
+  fetch:
+    src: ceph_crushmap_{{ timestamp.stdout }}.txt
+    dest: status
+
+- name: fetch ceph.conf
+  fetch:
+    src: /etc/ceph/ceph.conf
+    dest: status
+
+- name: collect logs from last 24 hours
+  shell:
+    find /var/log/ceph -type f -mtime -1 | xargs tar -czf ceph_logs_{{ timestamp.stdout }}.tar.gz
+  ignore_errors: yes
+
+- name: fetch logs from last 24 hours
+  fetch:
+    src: ceph_logs_{{ timestamp.stdout }}.tar.gz
+    dest: status
+
+- name: write all facts to local state file
+  local_action: copy content="{{ hostvars[inventory_hostname] }}" dest="status/{{ inventory_hostname }}/facts"
+
+- name: get current network bonding state
+  fetch:
+    src: /proc/net/bonding/bond{{ item }}
+    dest: status
+  with_sequence: start=0 end=1
+
+- name: get sysctl status
+  shell: 'sysctl -a'
+  register: sysctl_a
+
+- name: write sysctl status
+  local_action: copy content="{{ sysctl_a.stdout }}" dest="status/{{ inventory_hostname }}/sysctl_a"
