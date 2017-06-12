@@ -26,6 +26,15 @@
     src: ceph_health_detail_{{ hostvars['localhost'].checkup_timestamp }}.txt
     dest: status
 
+- name: run ceph pg dump
+  shell:
+    ceph pg dump > ceph_pg_dump_{{ hostvars['localhost'].checkup_timestamp }}.txt
+
+- name: fetch ceph pg dump
+  fetch:
+    src: ceph_pg_dump_{{ hostvars['localhost'].checkup_timestamp }}.txt
+    dest: status
+
 - name: run ceph osd tree
   shell:
     ceph osd tree > ceph_osd_tree_{{ hostvars['localhost'].checkup_timestamp }}.txt
