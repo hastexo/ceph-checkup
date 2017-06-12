@@ -1,0 +1,22 @@
+# -*- mode: conf -*-
+#
+# Enumerate your Ceph nodes here.
+#
+# Nodes should be identified by whatever name you use to connect to
+# them via SSH, including aliases defined with a "Host <name>" entry.
+#
+# If you need to connect to your Ceph nodes via a jump host, use the
+# "ProxyCommand ssh -W" method as described here:
+# https://en.wikibooks.org/wiki/OpenSSH/Cookbook/Proxies_and_Jump_Hosts#Recursively_Chaining_Gateways_Using_stdio_Forwarding
+
+[mon]
+# Mon hosts
+ceph-node1
+ceph-node2
+ceph-node3
+
+[osd]
+# OSD hosts
+ceph-node4
+ceph-node5
+ceph-node6
