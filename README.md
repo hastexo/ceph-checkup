@@ -5,6 +5,8 @@
 The playbooks in this repository collect information about a Ceph
 cluster in a non-destructive, read-only fashion.
 
+### Minimum Ansible version
+
 These playbooks require at least Ansible version 2.2.
 
 ### Inventory
