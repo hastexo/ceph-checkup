@@ -1,6 +1,6 @@
 # `ceph-checkup` 
 
-## Anible playbooks collecting vital information about Ceph nodes
+## Ansible playbooks collecting vital information about Ceph nodes
 
 The playbooks in this repository collect information about a Ceph
 cluster in a non-destructive, read-only fashion.
