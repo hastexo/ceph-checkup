@@ -1,0 +1,24 @@
+---
+- hosts: all
+  become: no
+  tasks:
+    - name: group hosts by ansible_distribution
+      group_by:
+        key: "{{ ansible_distribution|lower }}"
+      changed_when: false
+  tags:
+    - always
+
+- hosts: "mon"
+  serial: 1
+  become: yes
+  become_user: root
+  roles:
+  - role: checkup.mon
+
+- hosts: "osd"
+  serial: 1
+  become: yes
+  become_user: root
+  roles:
+  - role: checkup.osd
