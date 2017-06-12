@@ -47,6 +47,19 @@ In order to run the playbook, execute the following command:
 ansible-playbook -i hosts checkup.yml
 ```
 
+The playbooks use
+[Ansible’s `become` method](http://docs.ansible.com/ansible/become.html)
+for privilege escalation. This means that you need _not_ be able to
+ssh into your Ceph nodes directly as `root`, but the user you connect
+as must be able the _become_ `root` once logged in, via `sudo`. If the
+user you connect as needs to provide a password in order to use
+`sudo`, add the `-K` option to be prompted for that password:
+
+```bash
+ansible-playbook -i hosts -K checkup.yml
+```
+
+
 ## License
 
    Copyright 2016-17 hastexo Professional Services GmbH
