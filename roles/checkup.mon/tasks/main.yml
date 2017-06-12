@@ -19,7 +19,7 @@
 
 - name: run ceph health detail
   shell:
-    ceph df > ceph_health_detail_{{ hostvars['localhost'].checkup_timestamp }}.txt
+    ceph health detail > ceph_health_detail_{{ hostvars['localhost'].checkup_timestamp }}.txt
 
 - name: fetch ceph health detail
   fetch:
