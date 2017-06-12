@@ -1,3 +1,6 @@
 ---
 ceph_config_directory: /etc/ceph
 ceph_log_directory: /var/log/ceph
+bond_interfaces:
+  - bond0
+  - bond1
