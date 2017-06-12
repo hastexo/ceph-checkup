@@ -59,6 +59,21 @@ user you connect as needs to provide a password in order to use
 ansible-playbook -i hosts -K checkup.yml
 ```
 
+## Variables
+
+You may want to override the following variables:
+
+* `ceph_config_directory` — if you keep your configuration in a
+  directory other than `/etc/ceph`
+* `ceph_log_directory` — if your Ceph daemons write their logs to a
+  directory different from `/var/log/ceph`
+* `bond_interfaces` — if you want the playbooks to check the bonding
+  state of interfaces other than `bond0` and `bond1`.
+
+## Supported platforms
+
+The playbook tries to be as platform-agnostic as possible, but is
+being tested regularly on Ubuntu 16.04.
 
 ## License
 
