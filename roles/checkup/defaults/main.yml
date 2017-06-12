@@ -1,0 +1,3 @@
+---
+ceph_config_directory: /etc/ceph
+ceph_log_directory: /var/log/ceph
