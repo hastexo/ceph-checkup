@@ -1,6 +1,3 @@
-- name: write all facts to local state file
-  local_action: copy content="{{ hostvars[inventory_hostname] }}" dest="status/{{ inventory_hostname }}/facts"
-
 - name: collect logs from last 24 hours
   shell:
     find {{ ceph_log_directory }} -type f -mtime -1 | xargs tar -czf ceph_logs_{{ hostvars['localhost'].checkup_timestamp }}.tar.gz
@@ -22,10 +19,12 @@
     dest: status
   with_sequence: start=0 end=1
 
-
 - name: get sysctl status
   shell: 'sysctl -a'
   register: sysctl_a
 
 - name: write sysctl status
   local_action: copy content="{{ sysctl_a.stdout }}" dest="status/{{ inventory_hostname }}/sysctl_a"
+
+- name: write all facts to local state file
+  local_action: copy content="{{ hostvars[inventory_hostname] }}" dest="status/{{ inventory_hostname }}/facts"
