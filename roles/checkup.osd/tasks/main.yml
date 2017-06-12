@@ -1,0 +1,49 @@
+---
+- name: get the start date of the run
+  shell: date +%Y%m%d-%H%M%S
+  register: timestamp
+
+- name: collect logs from last 24 hours
+  shell:
+    find /var/log/ceph -type f -mtime -1 | xargs tar -czf ceph_logs_{{ timestamp.stdout }}.tar.gz
+  ignore_errors: yes
+    
+- name: fetch logs from last 24 hours
+  fetch:
+    src: ceph_logs_{{ timestamp.stdout }}.tar.gz
+    dest: status
+
+- name: list OSD journals
+  shell:
+    ls /var/lib/ceph/osd/*/journal -la > ceph_journals_{{ timestamp.stdout }}.txt
+
+- name: fetch OSD journal list
+  fetch:
+    src: ceph_journals_{{ timestamp.stdout }}.txt
+    dest: status
+
+- name: fetch ceph.conf
+  fetch:
+    src: /etc/ceph/ceph.conf
+    dest: status
+
+- name: write all facts to local state file
+  local_action: copy content="{{ hostvars[inventory_hostname] }}" dest="status/{{ inventory_hostname }}/facts"
+    
+- name: get current network bonding state
+  fetch:
+    src: /proc/net/bonding/bond{{ item }}
+    dest: status
+  with_sequence: start=0 end=1
+
+- name: get current SCSI state
+  fetch:
+    src: /proc/scsi/scsi
+    dest: status
+
+- name: get sysctl status
+  shell: 'sysctl -a'
+  register: sysctl_a
+
+- name: write sysctl status
+  local_action: copy content="{{ sysctl_a.stdout }}" dest="status/{{ inventory_hostname }}/sysctl_a"
