@@ -62,6 +62,11 @@ user you connect as needs to provide a password in order to use
 ansible-playbook -i hosts -K checkup.yml
 ```
 
+In order to minimize impact on a production cluster, the playbook’s
+task run with the
+[`serial: 1`](http://docs.ansible.com/ansible/playbooks_delegation.html#rolling-update-batch-size)
+option, meaning your cluster nodes will be queried sequentially.
+
 Once the playbook run is complete, you’ll find all collected
 information in the `status` directory. You can then archive and
 compress this directory, and share the archive with others as
