@@ -62,6 +62,13 @@ user you connect as needs to provide a password in order to use
 ansible-playbook -i hosts -K checkup.yml
 ```
 
+Once the playbook run is complete, you’ll find all collected
+information in the `status` directory. You can then archive and
+compress this directory, and share the archive with others as
+necessary. Use of file encryption (like
+[GnuPG](https://www.gnupg.org/gph/en/manual/x110.html)) is strongly
+recommended.
+
 ### Variables
 
 You may want to override the following variables:
