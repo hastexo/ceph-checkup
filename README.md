@@ -11,7 +11,8 @@ These playbooks require at least Ansible version 2.2.
 
 ### Inventory
 
-To use these playbooks, you must first create an Ansible
+To use these playbooks, you must first clone this repository. Then,
+create an Ansible
 [inventory](http://docs.ansible.com/ansible/intro_inventory.html) file
 (conventionally named `hosts`), optionally using the provided
 `hosts.example` file as a starting point.
