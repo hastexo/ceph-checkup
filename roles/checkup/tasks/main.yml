@@ -10,7 +10,7 @@
 
 - name: fetch ceph.conf
   fetch:
-    src: {{ ceph_config_directory }}/ceph.conf
+    src: "{{ ceph_config_directory }}/ceph.conf"
     dest: status
 
 - name: get current network bonding state
@@ -24,7 +24,9 @@
   register: sysctl_a
 
 - name: write sysctl status
+  sudo: false
   local_action: copy content="{{ sysctl_a.stdout }}" dest="status/{{ inventory_hostname }}/sysctl_a"
 
-  - name: write all facts to local state file
+- name: write all facts to local state file
+  sudo: false
   local_action: copy content="{{ hostvars[inventory_hostname] }}" dest="status/{{ inventory_hostname }}/facts"
