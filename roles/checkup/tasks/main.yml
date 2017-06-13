@@ -24,7 +24,9 @@
   register: sysctl_a
 
 - name: write sysctl status
+  become: no
   local_action: copy content="{{ sysctl_a.stdout }}" dest="status/{{ inventory_hostname }}/sysctl_a"
 
 - name: write all facts to local state file
+  become: no
   local_action: copy content="{{ hostvars[inventory_hostname] }}" dest="status/{{ inventory_hostname }}/facts"
